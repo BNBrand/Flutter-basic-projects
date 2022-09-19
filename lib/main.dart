@@ -1,201 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:math_expressions/math_expressions.dart';
+import 'package:untitled1/gallery_page.dart';
+import 'package:untitled1/home_page.dart';
+import 'package:untitled1/profile_page.dart';
 
-void main() => runApp(MaterialApp(
-  home: Home(),
-));
-
-class Home extends StatefulWidget {
-  _HomeState createState() => _HomeState();
+void main() {
+  runApp(const MyApp());
 }
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-
-  class _HomeState extends State<Home> {
-
-  String equation = '0';
-  String result = '0';
-  String expression ='';
-  double equationFontSize = 38.0;
-  double resultFontSize = 48.0;
-
-  buttonPressed(String buttonText){
-    setState(() {
-      if(buttonText == 'C'){
-        equation = '0';
-        result = '0';
-        equationFontSize = 38.0;
-        resultFontSize = 48.0;
-      }
-      else if(buttonText == 'del') {
-        equation = equation.substring(0, equation.length - 1);
-        if (equation == '') {
-          equation = '0';
-          equationFontSize = 48.0;
-          resultFontSize = 38.0;
-        }
-      }
-        else if(buttonText == '='){
-        equationFontSize = 38.0;
-        resultFontSize = 48.0;
-
-        expression = equation;
-        expression = expression.replaceAll('×', '*');
-        expression = expression.replaceAll('÷', '/');
-        expression = expression.replaceAll('±', '-');
-        try {
-          Parser p = new Parser();
-          Expression exp = p.parse(expression);
-          ContextModel cm = ContextModel();
-          result = '${exp.evaluate(EvaluationType.REAL, cm)}';
-        }
-          catch(e){
-            result = 'Invalid';
-        }
-      }
-        else if(equation == '0'){
-          equation = buttonText;
-      }
-        else if(buttonText == '±'){
-          equation = '-' + equation;
-      }
-        else{
-          equation = equation + buttonText;
-      }
-    });
-  }
-
-    Widget buildButton(String buttonText, double buttonHeight, Color buttonColor) {
-      return Container(
-        height: MediaQuery.of(context).size.height*.1*buttonHeight,
-        color: buttonColor,
-        child: MaterialButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0.0),
-            side: BorderSide(
-                color: Colors.white, width: 1, style: BorderStyle.solid),
-
-          ),
-          padding: EdgeInsets.all(16.0),
-          onPressed: () =>buttonPressed(buttonText),
-          child: Text(
-            buttonText,
-            style: TextStyle(
-                fontSize: 30.0,
-                fontWeight: FontWeight.normal,
-                color: Colors.white
-            ),
-          ),
-        ),
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+      ),
+      home: RootPage(),
       );
-    }
+  }
+}
+class RootPage extends StatefulWidget {
+  const RootPage({Key? key}) : super(key: key);
+
+  @override
+  State<RootPage> createState() => _RootPageState();
+}
+
+class _RootPageState extends State<RootPage> {
+
+  int currentpage = 1;
+  List<Widget> pages = [ ProfilePage(), HomePage(), GalleryPage() ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            'Calculator',
-          style: TextStyle(
-            fontSize: 30.0,
-          ),
-        ),
+        title: Text('My Dynamic app'),
         centerTitle: true,
-        backgroundColor: Colors.black54,
-
       ),
-      body: Container(
-        color: Colors.black12,
-        child: Column(
-          children: <Widget> [
-            Container(
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
-              child: Text(equation, style: TextStyle(fontSize: equationFontSize,),),
-            ),
-            Container(
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
-              child: Text(result, style: TextStyle(fontSize: resultFontSize,),),
-            ),
-            Expanded(
-                child: Divider()
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget> [
-                Container(
-                  width: MediaQuery.of(context).size.width*.75,
-                  child: Table(
-                    children: [
-                      TableRow(
-                        children: <Widget> [
-                          buildButton('C', 1, Colors.black),
-                          buildButton('del', 1, Colors.red.shade900),
-                          buildButton('÷', 1, Colors.black87),
-                        ],
-                      ),
-                      TableRow(
-                        children: <Widget> [
-                          buildButton('7', 1, Colors.black54),
-                          buildButton('8', 1, Colors.black54),
-                          buildButton('9', 1, Colors.black54),
-                        ],
-                      ),
-                      TableRow(
-                        children: <Widget> [
-                          buildButton('4', 1, Colors.black54),
-                          buildButton('5', 1, Colors.black54),
-                          buildButton('6', 1, Colors.black54),
-                        ],
-                      ),
-                      TableRow(
-                        children: <Widget> [
-                          buildButton('1', 1, Colors.black54),
-                          buildButton('2', 1, Colors.black54),
-                          buildButton('3', 1, Colors.black54),
-                        ],
-                      ),
-                      TableRow(
-                        children: <Widget> [
-                          buildButton('.', 1, Colors.black87),
-                          buildButton('0', 1, Colors.black54),
-                          buildButton('±', 1, Colors.black87),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  child: Table(
-                    children: [
-                      TableRow(
-                        children: [
-                          buildButton('×', 1, Colors.black87),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          buildButton('-', 1, Colors.black87),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          buildButton('+', 1, Colors.black87),
-                        ],
-                      ),
-                      TableRow(
-                        children: [
-                          buildButton('=', 2, Colors.black),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            )
-          ],
-        ),
+      body: pages[currentpage],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print('Fuck this works');
+        },
+        child: Icon(Icons.add),
+      ),
+      bottomNavigationBar: NavigationBar(
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.photo), label: 'Galary'),
+        ],
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentpage = index;
+          });
+        },
+        selectedIndex: currentpage,
       ),
     );
   }
 }
+
+
